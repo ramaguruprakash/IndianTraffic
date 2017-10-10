@@ -25,3 +25,7 @@ def generate():
 	fp.write(str(seq))
 	fp.close()
 	print seq
+
+
+if __name__=="__main__":
+	generate()
