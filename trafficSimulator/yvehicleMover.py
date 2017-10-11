@@ -9,7 +9,12 @@ class YvehicleMover(VehicleBehavior):
 	def __init__(self):
 		pass
 
-	def updatePos(self, grid, posX, posY, route, edgeNo):
+	def updatePos(self, grid, curVehicle, vehicles):
+		posX = curVehicle.curX
+		posY = curVehicle.curY
+		route = curVehicle.route
+		edgeNo = curVehicle.numberOfEdgesCompleted
+		speed = curVehicle.speed
 		shape = grid.shape
 		sizeX = shape[0]
 		sizeY = shape[1]

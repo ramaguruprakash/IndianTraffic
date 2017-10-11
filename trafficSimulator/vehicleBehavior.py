@@ -4,6 +4,8 @@
 
 class VehicleBehavior():
 
+	def __init__(self):
+		pass
 
-	def updatePos(self, grid, posX, posY, route):
+	def updatePos(self, grid, curVehicle, vehicles):
 		pass

@@ -1,5 +1,5 @@
 #! /users/guruprakash.r/miniconda2/bin/python
-
+from random import randint
 
 class Vehicle:
 		def __init__(self, cl, route, startTime, positionUpdater):
@@ -10,14 +10,15 @@ class Vehicle:
 			self.curY = -1
 			self.startTime = startTime
 			self.track = []
+			self.speed = randint(1, 5)
 			self.numberOfEdgesCompleted = 0
 
-		def move(self, timestamp, grid):
+		def move(self, timestamp, grid, vehicles):
 			if (timestamp < self.startTime):
 				self.track.append((-1, -1))
 				return
-
-			self.numberOfEdgesCompleted, x, y = self.positionUpdater.updatePos(grid, self.curX, self.curY, self.route, self.numberOfEdgesCompleted)
+			self.numberOfEdgesCompleted, x, y = self.positionUpdater.updatePos(grid, self, vehicles)
+			print self.cl + " " + str(x) + " " + str(y)
 			if self.numberOfEdgesCompleted == -1:
 				self.curX = -1
 				self.curY = -1
