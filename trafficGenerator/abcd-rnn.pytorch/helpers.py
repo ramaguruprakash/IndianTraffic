@@ -8,7 +8,7 @@ import math
 import torch
 
 # Reading and un-unicode-encoding data
-
+vehicle_to_alphabet = {'CAR':'c', 'VAN':'v', 'TRUCK':'t', 'MOTORBIKE':'m', 'None':'n', 'BUS':'b'}
 all_characters = string.printable
 n_characters = len(all_characters)
 print all_characters, len(all_characters)
@@ -34,4 +34,3 @@ def time_since(since):
     m = math.floor(s / 60)
     s -= m * 60
     return '%dm %ds' % (m, s)
-

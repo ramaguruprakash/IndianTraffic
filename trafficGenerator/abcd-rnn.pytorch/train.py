@@ -50,6 +50,36 @@ def random_training_set(chunk_len, batch_size):
         target = target.cuda()
     return inp, target
 
+def get_traffic_training_set2(chunk_len, batch_size):
+	li = file.split(", ")
+	li = [x.strip("[]'") for x in li]
+	sequences = [x.split(' ') for x in li]
+	for i,x in enumerate(sequences):
+		x[0] = vehicle_to_alphabet[x[0]]
+		sequences[i] = x
+	
+	sequences_len = len(sequences)
+	#print sequences, sequences_len
+	inp = torch.LongTensor(batch_size, 2*chunk_len)
+	target = torch.LongTensor(batch_size, 2*chunk_len)
+	for bi in range(batch_size):
+		start_index = random.randint(0, sequences_len-chunk_len-1)
+		end_index = start_index + chunk_len + 1
+		train_seq = sequences[start_index:end_index]
+		train_seq = [x[0]+x[1] for x in train_seq]
+		train_seq = ''.join(train_seq)
+		print "train_seq" , train_seq
+		inp[bi] = char_tensor(train_seq[:-2])
+		target[bi] = char_tensor(train_seq[2:])
+		
+	inp = Variable(inp)
+	target = Variable(target)
+	if args.cuda:
+		inp = inpu.cuda()
+		target = target.cuda()
+	return inp, target
+
+
 def couple_training_set(chunk_len, batch_size):
     inp = torch.LongTensor(batch_size, 2*chunk_len)
     target = torch.LongTensor(batch_size, 2*chunk_len)
@@ -66,6 +96,7 @@ def couple_training_set(chunk_len, batch_size):
         inp = inp.cuda()
         target = target.cuda()
     return inp, target
+
 
 def get_traffic_training_set(chunk_len, batch_size):
 	li = file.split("], ")
@@ -89,6 +120,7 @@ def get_traffic_training_set(chunk_len, batch_size):
 		inp = inpu.cuda()
 		target = target.cuda()
 	return inp, target
+
 
 def train(inp, target):
     #print inp.data.numpy(), target.data.numpy()
@@ -157,7 +189,8 @@ try:
     print("Training for %d epochs..." % args.n_epochs)
     for epoch in tqdm(range(1, args.n_epochs + 1)):
         #loss = train(*random_training_set(args.chunk_len, args.batch_size))
-        loss = train_couple(*couple_training_set(args.chunk_len, args.batch_size))
+        #loss = train_couple(*couple_training_set(args.chunk_len, args.batch_size))
+        loss = train_couple(*get_traffic_training_set2(args.chunk_len, args.batch_size))
         #loss = train(get_traffic_training_set(args.chunk_len, args.batch_size))
         loss_avg += loss
 
