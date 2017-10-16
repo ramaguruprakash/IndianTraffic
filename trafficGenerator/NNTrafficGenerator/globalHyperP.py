@@ -4,12 +4,11 @@ from dataLoader import getTrainingData
 from models import VanillaGRUNetwork
 
 
-load_model = 1
+load_model = 0
 starting_epoch = 0
 chunk_size = 128
 input_size = 2
 output_size = 2
-batch_length = 64
 hidden_size = 100
 n_layers = 1
 
@@ -34,7 +33,7 @@ if load_model:
 use_cuda = torch.cuda.is_available()
 
 if use_cuda:
-    print ('CUDA is available')
-    net = net.cuda()
-    criterion = criterion.cuda()
+	print ('CUDA is available')
+	net = net.cuda()
+	criterion = criterion.cuda()
 

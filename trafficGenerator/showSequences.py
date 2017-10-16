@@ -3,7 +3,7 @@
 import cv2
 import numpy as np
 
-fp = open("generatedSequences")
+fp = open("NNTrafficGenerator/generatedSequences")
 
 sequences = fp.read()
 

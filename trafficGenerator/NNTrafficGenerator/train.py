@@ -15,23 +15,32 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 
 
 def train(nofEpoch, number_of_seq):
+	## Defining the global variables.
 	global use_cuda
 	global net
 	global starting_epoch
+
+	## The entire loss function
 	lo = []
 	chunk_size = 5
-	trafficDataset = TrafficSequencesDataset("../../trafficSimulator/output/", number_of_seq, 10, False, False)
+
+	## Loading the training set
+	trafficDataset = TrafficSequencesDataset("../../trafficSimulator/output/", number_of_seq, 10, False, False, 'Normalize')
 	trafficDataloader = DataLoader(trafficDataset, batch_size=1, shuffle=False, num_workers=1)
+
 	for i in range(starting_epoch, nofEpoch):
-		h = net.init_hidden()
-		if use_cuda:
-			h = h.cuda()
+
 		lossInEpoch = 0
 
 		for k, seq in enumerate(trafficDataloader):
 			seq = seq.view(seq.size()[1], seq.size()[2])
 
 			for l, chunk_idx in enumerate(range(0, seq.size()[0], chunk_size)):
+
+				h = net.init_hidden()
+				if use_cuda:
+					h = h.cuda()
+
 				chunk = seq[chunk_idx:chunk_idx+chunk_size]
 
 				xs, zs = chunk[:-1], chunk[1:]
@@ -39,7 +48,6 @@ def train(nofEpoch, number_of_seq):
 					xs = xs.cuda()
 					zs = zs.cuda()
 
-				#print "target and values", len(xs), len(zs)
 				loss = 0
 				net.zero_grad()
 				for x, z in zip(xs, zs):
@@ -58,14 +66,21 @@ def train(nofEpoch, number_of_seq):
 				optimizer.step()
 			print "lossInEpoch " + str(i) + " seqNo " + str(k) + " " + str(lossInEpoch.numpy().tolist()) 
 			lo.append(lossInEpoch.numpy().tolist())
-		net = net.cpu()
-		save_checkpoint({'epoch':i+1, 
+
+		if use_cuda:
+			save_checkpoint({'epoch':i+1, 
 						'state_dict':net.cpu().state_dict(),
 						'optimizer':optimizer.state_dict(),
 						'GPU_usage':subprocess.check_output(['nvidia-smi']),
 						'Losses':str(lo)}, False)
-		net = net.cuda()
+			net = net.cuda()
+		else:
+			save_checkpoint({'epoch':i+1, 
+						'state_dict':net.state_dict(),
+						'optimizer':optimizer.state_dict(),
+						'GPU_usage':subprocess.check_output(['nvidia-smi']),
+						'Losses':str(lo)}, False)
+
 		if i % 5 == 0:
 			generate()
-
 	return lo

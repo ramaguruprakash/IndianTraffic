@@ -13,7 +13,10 @@ def getSequences(filename, use_classes):
 	##will not bother about 
 	fp.readline()
 	fp.readline()
-	fp.readline()
+	roadCoordinates = fp.readline()
+	roadCoordinates = [float(x)  for x in (roadCoordinates.split(" ")) ]
+	print "Road coordinates", roadCoordinates
+
 	##will not bother about
 	numberOfseq = int(fp.readline()[:-1])
 	sequences = []

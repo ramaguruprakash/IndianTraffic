@@ -30,8 +30,7 @@ class VanillaGRUNetwork(nn.Module):
         # Size(D) -> Size(1,D)
 
         x = self.fc_in(x.view(1, -1))
-        # Mimicking TxBxD, required by RNN.
-        # h(t-1) in, h(t) out.
+
         x, h = self.rnn(x.view(1, 1, -1), h)
 
         x = self.fc_out(x.view(1, -1))
